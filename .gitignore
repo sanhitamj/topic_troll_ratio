@@ -99,3 +99,7 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+
+#The other type of files
+Guardian*.html
