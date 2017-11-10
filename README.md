@@ -20,9 +20,9 @@ Also there is another conversation about how we live in our own echo chambers, a
 The ideas behind this project are -
 * Sociological - Find out the comments that resonate with the original article and those that are exactly opposite. Count the number of upvotes each of the type of comments get. That should be more telling about how polarised we are.
 
-* Technology - Teach myself a number of technolgies. Or this project uses the following resources -
+* Technology - Teach myself a number of technolgies used in Data Science and Machine Learning. Or this project uses the following resources -
   * Python
   * Web-scraping - urllib, requests, beautifulsoup
   * Database - MongoDB, pymongo, DynamoDB on AWS
   * NLP - NLTK, scikit-learn (sklearn)
-  * Miscleneous - Boto, Jupyter Notebook, git
+  * Miscellaneous - Boto, Jupyter Notebook, git
