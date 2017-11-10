@@ -4,7 +4,7 @@
 Count proportion of troll comments on the guardian's website according to topics
 
 This project began when a friend discussed with me this article from the Guardian -
- </a href="https://www.theguardian.com/technology/2016/apr/12/the-dark-side-of-guardian-comments">
+ <a href= "https://www.theguardian.com/technology/2016/apr/12/the-dark-side-of-guardian-comments">
  The dark side of Guardian comments </a>
 
 From the summary published in the article -
