@@ -1,4 +1,4 @@
-# topic_troll_ratio
+# Topic Troll Ratio
 ### aka Measure how polarised we are on internet
 
 Count proportion of troll comments on the guardian's website according to topics
