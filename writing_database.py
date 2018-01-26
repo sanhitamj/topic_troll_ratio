@@ -10,14 +10,14 @@ import sys
 
 
 def get_urls():
-    # years = ["2015", "2016", "2017"]
-    # months = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"]
-    # dates = [str(n) for n in xrange(1,28)]
+    years = ["2015", "2016", "2017"]
+    months = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"]
+    dates = [str(n) for n in xrange(1,28)]
 
 
-    years = ["2017"]
-    months = ["jan"]
-    dates = [str(31)]
+    # years = ["2017"]
+    # months = ["jan"]
+    # dates = [str(31)]
 
 
     # count of number of links
