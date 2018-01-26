@@ -200,7 +200,8 @@ def real_download():
     for document in cursor:
         url = str(document['url'])
         id_n = document['_id']
-        print "Working on this link", url
+        print "\n"
+        print "Working on the link -", url
 
 
         soup = download_comments(url)
