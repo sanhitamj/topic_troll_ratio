@@ -196,9 +196,10 @@ def real_download():
     db = client["guardian"] #This is the name of the database
     urls = db["urls"] # this is the table in that database
 
-    cursor = urls.find({})
+    cursor = urls.find({}, no_cursor_timeout= True)
     for document in cursor:
         url = str(document['url'])
+        time.sleep(15)
         id_n = document['_id']
         print "\n"
         print "Working on the link -", url
