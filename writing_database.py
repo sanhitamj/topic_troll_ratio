@@ -5,14 +5,14 @@ import time
 from bs4 import BeautifulSoup
 # from selenium import webdriver
 # from selenium.webdriver.common.keys import Keys
-import urllib2
+import urllib
 import sys
 
 
 def get_urls():
-    years = ["2015", "2016", "2017"]
+    years = ["2017", "2018"]
     months = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"]
-    dates = [str(n) for n in xrange(1,28)]
+    dates = [str(n) for n in range(1,28)]
 
 
     # years = ["2017"]
@@ -53,7 +53,7 @@ def get_urls():
         urls.insert_one({"id" : i, "url" : link})
     #             print link
         i += 1
-    print "Total number of links stored is ", i
+    print ("Total number of links stored is ", i)
 
     return
 
@@ -72,7 +72,7 @@ def download_comments(guardianLink):
     # print "Comments Match = ", commentsMatch()
     if commentsMatch:
         pageId = commentsMatch.group(1)
-        print '[+] pageId has been retrieved ('+pageId+')'
+        print ('[+] pageId has been retrieved ('+pageId+')')
     else:
         sys.exit('[-] Could not retrieve pageId!')
 
@@ -200,22 +200,24 @@ def real_download():
     for document in cursor:
         url = str(document['url'])
         id_n = document['_id']
-        print "\n"
-        print "Working on the link -", url
+        print ("\n")
+        print ("Working on the link -", url)
 
 
-        soup = download_comments(url)
-    #     #     comment_text_list, comment_id_list, author_id_list, auth_name_lst, upvotes_count_list
-        comment_text_list, comment_id_list, author_id_list, auth_name_lst, upvotes_count_list = getting_comment_data(soup)
+#         soup = download_comments(url)
+    ###      comment_text_list, comment_id_list, author_id_list, auth_name_lst, upvotes_count_list
+#         comment_text_list, comment_id_list, author_id_list, auth_name_lst, upvotes_count_list = getting_comment_data(soup)
 
         topics_list, article, title = article_topics_title(url)
-        print "Title of the article is: ", title
+        print ("Title of the article is: ", title)
 
-        urls.update_one({'url': url},
-                        {"$set": {'title': title, 'article' : article, 'topics_list': topics_list,
-                                'comment_ids' : comment_id_list, 'comment_text' : comment_text_list,
-                                'author_ids' : author_id_list, 'author_name' : auth_name_lst,
-                                'upvotes' : upvotes_count_list}}, upsert=True)
+        urls.updateOne({'url': url},
+                        {"$set": {'title': title, 'article' : article,
+                        'topics_list': topics_list}}, upsert=True)
+#                         {"$set": {'title': title, 'article' : article, 'topics_list': topics_list,
+#                                 'comment_ids' : comment_id_list, 'comment_text' : comment_text_list,
+#                                 'author_ids' : author_id_list, 'author_name' : auth_name_lst,
+#                                 'upvotes' : upvotes_count_list}}, upsert=True)
 
     return
 
