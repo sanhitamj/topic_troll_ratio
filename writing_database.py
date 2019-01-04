@@ -199,7 +199,7 @@ def real_download():
     cursor = urls.find({}, no_cursor_timeout= True)
     for document in cursor:
         url = str(document['url'])
-        time.sleep(15)
+        time.sleep(60)
         id_n = document['_id']
         print ("\n")
         print ("Working on the link -", url)
