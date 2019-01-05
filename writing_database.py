@@ -239,7 +239,7 @@ def store_comments():
         soup = download_comments(url)
         comment_text_list, comment_id_list, author_id_list, auth_name_lst, upvotes_count_list = getting_comment_data(soup)
     ##      comment_text_list, comment_id_list, author_id_list, auth_name_lst, upvotes_count_list
-        res = comment_tab.insert_one({'id' : i, 'url': url, 'comment_ids' : comment_id_list,
+        res = comment_tab.insert_one({'id' : document['id'], 'url': url, 'comment_ids' : comment_id_list,
                         'comment_text' : comment_text_list,
                         'author_ids' : author_id_list, 'author_name' : auth_name_lst,
                         'upvotes' : upvotes_count_list})
