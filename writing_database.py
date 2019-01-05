@@ -13,7 +13,7 @@ import sys
 def get_urls(reset = False):
     years = ["2018"]
     months = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"]
-    dates = [str(n) for n in range(1,28)]
+    dates = [str(n) for n in range(1,30)]
 
 
     # years = ["2017"]
@@ -38,6 +38,10 @@ def get_urls(reset = False):
 
     for year in years:
         for month in months:
+            if month == 'feb':
+                dates = [str(n) for n in range(1,28)]
+            else:
+                dates = [str(n) for n in range(1,30)]
             for date in dates:
                 root_url = "https://www.theguardian.com/commentisfree/" + year  + "/" + month + "/" + date
 
@@ -196,7 +200,7 @@ def article_topics_title(url):
 
 
 
-def real_download():
+def download_articles():
     client = MongoClient()
     db = client["guardian"] #This is the name of the database
     urls = db["urls"] # this is the table in that database
@@ -204,21 +208,29 @@ def real_download():
 
     i = 0
 
-    cursor = urls.find({}, no_cursor_timeout= True)
-    for document in cursor:
-        seconds = random.randint(5, 39)
-        time.sleep(seconds)
-        url = str(document['url'])
-        id_n = document['_id']
-        topic_list, article, title = article_topics_title(url)
-        print ("Title of the article is: ", title)
+    try :
+        cursor = urls.find({}, no_cursor_timeout= True)
+        data_url_set =  set([u['url'] for u in db.data.find({'url':{'$exists': 1}})])
 
-        res = data.insert_one({'id' : i, 'url' : url, 'article' : article,
-                   'title' : title, 'topic_list' : topic_list})
-        i += 1
-        if i % 25 == 0:
-            print ("Message : {:d} documents downloaded.".format(i))
-            print ("\n")
+        for document in cursor:
+            seconds = random.randint(5, 39)
+            time.sleep(seconds)
+            url = str(document['url'])
+            id_n = document['_id']
+
+            if url not in data_url_set:
+                topic_list, article, title = article_topics_title(url)
+                print ("Title of the article is: ", title)
+
+                res = data.insert_one({'id' : id_n, 'url' : url, 'article' : article,
+                           'title' : title, 'topic_list' : topic_list})
+                i += 1
+                if i % 25 == 0:
+                    print ("Message : {:d} documents downloaded.".format(i))
+                    print ("\n")
+        cursor.close()
+    except pymongo.errors.CursorNotFound:
+        print ("Curser not found")
 
     return
 
@@ -234,12 +246,14 @@ def store_comments():
         seconds = random.randint(5, 39)
         time.sleep(seconds)
         url = str(document['url'])
-        print ('URL = ', url)
         id_n = document['_id']
+
+        print ('URL = ', url)
+
         soup = download_comments(url)
         comment_text_list, comment_id_list, author_id_list, auth_name_lst, upvotes_count_list = getting_comment_data(soup)
     ##      comment_text_list, comment_id_list, author_id_list, auth_name_lst, upvotes_count_list
-        res = comment_tab.insert_one({'id' : document['id'], 'url': url, 'comment_ids' : comment_id_list,
+        res = comment_tab.insert_one({'id' : id_n, 'url': url, 'comment_ids' : comment_id_list,
                         'comment_text' : comment_text_list,
                         'author_ids' : author_id_list, 'author_name' : auth_name_lst,
                         'upvotes' : upvotes_count_list})
@@ -258,4 +272,5 @@ if __name__ == "__main__":
     # db = client["guardian"] #This is the name of the database
     # result = db.data.delete_many({})
 
-    real_download()
+    # get_urls(reset = True)
+    download_articles()
