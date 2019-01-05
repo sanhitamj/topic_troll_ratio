@@ -28,6 +28,8 @@ def get_urls(reset = False):
     client = MongoClient()
     db = client["guardian"] #This is the name of the database
     urls = db["urls"] # this is the table in that database
+    data = db["data"]
+    comment_tab = db["comment_tab"]
 
     if reset:
         result = db.urls.delete_many({}) # A fresh start to the DB table -> removing all entries
@@ -194,7 +196,7 @@ def article_topics_title(url):
 
 
 
-def real_download(title = 1, article = 1, topics = 1, comments_data = 0):
+def real_download():
     client = MongoClient()
     db = client["guardian"] #This is the name of the database
     urls = db["urls"] # this is the table in that database
@@ -210,27 +212,50 @@ def real_download(title = 1, article = 1, topics = 1, comments_data = 0):
         id_n = document['_id']
         topic_list, article, title = article_topics_title(url)
         print ("Title of the article is: ", title)
-        print ("\n")
 
-        if comments_data == 0 :
-            res = data.insert_one({'id' : i, 'url' : url, 'article' : article,
-                       'title' : title, 'topic_list' : topic_list})
-
-        if comments_data == 1:
-            soup = download_comments(url)
-            comment_text_list, comment_id_list, author_id_list, auth_name_lst, upvotes_count_list = getting_comment_data(soup)
-        ##      comment_text_list, comment_id_list, author_id_list, auth_name_lst, upvotes_count_list
-            res = data.insert_one({'id' : i, 'url': url, 'title': title, 'article' : article,
-                            'topics_list': topics_list, 'comment_ids' : comment_id_list,
-                            'comment_text' : comment_text_list,
-                            'author_ids' : author_id_list, 'author_name' : auth_name_lst,
-                            'upvotes' : upvotes_count_list})
+        res = data.insert_one({'id' : i, 'url' : url, 'article' : article,
+                   'title' : title, 'topic_list' : topic_list})
         i += 1
-        if i % 2 == 0:
+        if i % 25 == 0:
             print ("Message : {:d} documents downloaded.".format(i))
+            print ("\n")
+
+    return
+
+def store_comments():
+    client = MongoClient()
+    db = client["guardian"] #This is the name of the database
+    urls = db["urls"] # this is the table in that database
+    comment_tab = db["comment_tab"]
+    i = 0
+
+    cursor = urls.find({}, no_cursor_timeout= True)
+    for document in cursor:
+        seconds = random.randint(5, 39)
+        time.sleep(seconds)
+        url = str(document['url'])
+        print ('URL = ', url)
+        id_n = document['_id']
+        soup = download_comments(url)
+        comment_text_list, comment_id_list, author_id_list, auth_name_lst, upvotes_count_list = getting_comment_data(soup)
+    ##      comment_text_list, comment_id_list, author_id_list, auth_name_lst, upvotes_count_list
+        res = comment_tab.insert_one({'id' : i, 'url': url, 'comment_ids' : comment_id_list,
+                        'comment_text' : comment_text_list,
+                        'author_ids' : author_id_list, 'author_name' : auth_name_lst,
+                        'upvotes' : upvotes_count_list})
+
+
+        i += 1
+        if i % 25 == 0:
+            print ("Message : {:d} documents downloaded.".format(i))
+            print ("\n")
 
     return
 
 if __name__ == "__main__":
-    get_urls(reset = True)
+    # get_urls(reset = True)
+    # client = MongoClient()
+    # db = client["guardian"] #This is the name of the database
+    # result = db.data.delete_many({})
+
     real_download()
