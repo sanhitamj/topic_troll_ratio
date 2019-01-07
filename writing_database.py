@@ -38,10 +38,9 @@ def get_urls(reset = False):
 
     for year in years:
         for month in months:
+            dates = [str(n) for n in range(1,30)]
             if month == 'feb':
                 dates = [str(n) for n in range(1,28)]
-            else:
-                dates = [str(n) for n in range(1,30)]
             for date in dates:
                 root_url = "https://www.theguardian.com/commentisfree/" + year  + "/" + month + "/" + date
 
@@ -208,29 +207,31 @@ def download_articles():
 
     i = 0
 
-    try :
-        cursor = urls.find({}, no_cursor_timeout= True)
-        data_url_set =  set([u['url'] for u in db.data.find({'url':{'$exists': 1}})])
+    cursor = urls.find({}, no_cursor_timeout= True)
+    all_urls = [d['url'] for d  in db.urls.find()]
+    data_url_set =  set([u['url'] for u in db.data.find({'url':{'$exists': 1}})])
+    cursor.close()
 
-        for document in cursor:
+    skip_count = len(data_url_set)
+
+    for u in all_urls:
+        if u not in data_url_set:
+            # print ('URL = ', u)
             seconds = random.randint(5, 39)
             time.sleep(seconds)
-            url = str(document['url'])
-            id_n = document['_id']
-
-            if url not in data_url_set:
-                topic_list, article, title = article_topics_title(url)
+            try:
+                topic_list, article, title = article_topics_title(u)
                 print ("Title of the article is: ", title)
 
-                res = data.insert_one({'id' : id_n, 'url' : url, 'article' : article,
+                res = data.insert_one({'id' : skip_count, 'url' : u, 'article' : article,
                            'title' : title, 'topic_list' : topic_list})
                 i += 1
                 if i % 25 == 0:
                     print ("Message : {:d} documents downloaded.".format(i))
                     print ("\n")
-        cursor.close()
-    except pymongo.errors.CursorNotFound:
-        print ("Curser not found")
+            except :
+                pass
+            skip_count += 1
 
     return
 
