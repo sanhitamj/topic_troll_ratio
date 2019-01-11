@@ -193,6 +193,8 @@ def article_topics_title(url):
         tag.decompose()
 
     article = [str(s) for s in soup.find("div", {"class" : "content__article-body from-content-api js-article__body"})]
+    article = ' '.join(t.lower() for t in article)
+    article = BeautifulSoup(article).get_text().replace("\n", " ")
 
 
     return topic_list, article, title
