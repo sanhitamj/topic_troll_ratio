@@ -111,57 +111,6 @@ def download_comments(guardianLink):
 
 
 
-def getting_comment_data(soup):
-    '''
-    This function takes in the soup of comments. Returns a list of list.
-    Each element in the list is a list of -
-    comment_id, comment, author_id, author, number_of_upvotes
-
-    '''
-
-    auth_name_lst = []
-    comm_id_lst = []
-    auth_id_lst = []
-    for lis in soup.find_all('li'):
-        if 'data-comment-author-id' in (lis.attrs) and 'data-comment-id' in (lis.attrs)and 'data-comment-author' in (lis.attrs):
-            auth_name_lst.append(lis.attrs['data-comment-author'].encode('utf-8').replace("  ", " "))
-            auth_id_lst.append(int(lis.attrs['data-comment-author-id']))
-            comm_id_lst.append(int(lis.attrs['data-comment-id']))
-
-    comments_text = soup.findAll("div", { "class" : "d-comment__body" })
-    recommends = soup.findAll("span", {"class" : "d-comment__recommend-count--old"})
-    users = soup.findAll("span", {"itemprop" : "givenName"})
-
-    comment_data_list = []
-    comment_text_list = []
-    comment_id_list = []
-    author_id_list = []
-    author_name_list = []
-    upvotes_count_list = []
-
-    i = 0
-    j = 0
-    for comment_text, upvotes, user, auth_name, auth_id, comment_id in zip(comments_text, recommends, users, auth_name_lst, auth_id_lst, comm_id_lst):
-        i += 1
-        if 'comment was removed by a moderator ' not in comment_text.text:
-            j += 1
-#             This is the count of comments not removed by the moderator
-
-
-#             if auth_name.strip() != user.text.encode('utf-8').strip():
-#                 print "something is broken for -"+ auth_name.strip()+ "-"+ user.text.encode('utf-8').strip()
-#             else :
-            if not upvotes.txt:
-                upvote = 0
-            else :
-                upvote = int(upvotes.txt)
-            comment_text_list.append(comment_text.text)
-            comment_id_list.append(comment_id)
-            author_id_list.append(auth_id)
-            author_name_list.append(auth_name)
-            upvotes_count_list.append(upvote)
-
-    return comment_text_list, comment_id_list, author_id_list, auth_name_lst, upvotes_count_list
 
 
 # ### To extract topic(s) and text of an article
